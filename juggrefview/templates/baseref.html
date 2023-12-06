@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" language="javascript" src="{% static "juggjuggref.js" %}"></script>
+
+
+    <link rel="stylesheet" href="{% static "game.css" %}">
+    <link rel="stylesheet" href="{% static "juggjuggref.css" %}">
+
+    <title>Game {{ game.name  }}</title>
+</head>
+
+
+
+<body>
+<h1><a href="{% url "home" %}">home</a>  </h1>
+    <input type="text" id="video_url" value="https://www.youtube.com/watch?v={{ videoId }}"/> <button type="button" onclick="set_url()">load new video</button>
+
+    <div class="row">
+        <div class="main_column">
+            <div class="parent">
+                <div id="player"></div>
+                <canvas id="pannel" class="pannel" width="1920" height="1080"  ></canvas>
+            </div>
+
+
+            <div class="slidecontainer">
+                <input type="range" min="1" max="1000" value="0" class="slider" id="myRange">
+            </div>
+        </div>
+        <div class="side_column">
+            <div class="record">
+                <label>ref positon: </label>
+                    <select name="positions" id="position_select">
+                        <option value="main">Main Ref</option>
+                        <option value="second">Second Ref</option>
+                        <option value="right">Goal right</option>
+                        <option value="left">Goal Left</option>
+                    </select><br>
+                <label>Record name : </label><input type="text" id="record_name">
+                <button type="button" onclick="submit_server()">submit</button>
+                    <button type="button" onclick="copy_record()">copy to clipboard</button>
+
+            </div>
+            <div id="record_list">
+            </div>
+             <div class="record" id="add_record"><button type="button" onclick="record_names()">import record</button></div>
+            <div id="drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);"> Drag and drop File</div>
+        </div>
+    </div>
+
+
+
+
+<br>
+
+<span id="scoreboard">
+
+    score (MSE) : <span id="mse"></span>
+</span>
+
+<script>
+    let videoid = "{{ videoId }}"
+</script>
+</body>
+
+</html>
