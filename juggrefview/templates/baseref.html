@@ -4,10 +4,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script type="text/javascript" language="javascript" src="{% static "juggjuggref.js" %}"></script>
+    <!--<script type="text/javascript" language="javascript" src="{% static "juggjuggref.ts" %}"></script>-->
+    <script type="text/javascript" language="javascript" src="{% static "bundle_jugrefview.js" %}"></script>
 
 
-    <link rel="stylesheet" href="{% static "game.css" %}">
     <link rel="stylesheet" href="{% static "juggjuggref.css" %}">
 
     <title>Game {{ game.name  }}</title>
@@ -20,7 +20,7 @@
     <input type="text" id="video_url" value="https://www.youtube.com/watch?v={{ videoId }}"/> <button type="button" onclick="set_url()">load new video</button>
 
     <div class="row">
-        <div class="main_column">
+        <div id="main_column">
             <div class="parent">
                 <div id="player"></div>
                 <canvas id="pannel" class="pannel" width="1920" height="1080"  ></canvas>

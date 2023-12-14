@@ -1,15 +1,15 @@
+
+
 .parent {
     position: relative;
-    width: 1920px;
-    height: 1080px;
+    width: 100%;
+    height: 100%;
     margin: 10px;
 }
 
 .player {
     position: absolute;
 
-    width: 100%;
-    height: 100%;
     top: 0;
     left: 0;
     opacity: 0.9;
@@ -37,7 +37,9 @@
     display: flex;
 }
 
-.main_column {
+#main_column {
+    width: 800px;
+    height: 400px;
 }
 
 .side_column{
@@ -48,7 +50,7 @@
 
 }
 #drop{
-      position: relative;
+    position: relative;
     text-align: center;
     flex-grow : 1;
     font-size: 16;
@@ -74,7 +76,7 @@
 
 
 .slidecontainer {
-  width: 1920px; /* Width of the outside container */
+  width: 100%; /* Width of the outside container */
 
 }
 
