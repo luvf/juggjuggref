@@ -119,7 +119,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    BASE_DIR / "juggrefview" / "static"
+    BASE_DIR / "juggrefview/scripts"
 
     ]
 
