@@ -115,15 +115,3 @@ export function add_record(json_file:any, record_id:number):void{
     }
 }
 
-export function setup_canvas(player:YT.Player):void{
-    /**
-     * at startup
-     * @type {HTMLElement}
-     */
-    const canvas:HTMLElement = document.getElementById("pannel");
-
-    canvas.addEventListener("mousemove", mousemoveAction);
-
-    document.addEventListener('keydown', keyPressedAction);
-    //todo
-}

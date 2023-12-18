@@ -4,7 +4,7 @@
 // <reference types="node" />
 //
 import {RecordPoint, RefRecord,histories,reference_hist, record_frames} from "./record.js"
-import {get_yt_video_id,set_url,setup_canvas} from "./html_manipulation.js"
+import {get_yt_video_id,set_url} from "./html_manipulation.js"
 import {record_names, submit_server} from "./server_communication.js"
 
 
@@ -85,56 +85,9 @@ function myDragOverHandler(ev:Event) :void{
   // Prevent default behavior (Prevent file from being opened)
   ev.preventDefault();}
 
+var player: YT.Player;
 
 
-// 2. This code loads the IFrame Player API code asynchronously.
-var tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-
-var player:YT.Player;
-
-function onYouTubeIframeAPIReady():void{
-    /**
-     * initialize the yt video
-     * @type {YT.Player}
-     */
-    const player_size = getComputedStyle(document.getElementsByClassName("parent")[0]);
-    const player_div = document.getElementById("player");
-    const playerev : YT.Events = {
-            onReady: onPlayerReady,
-            onStateChange : onPlayerStateChange
-    };
-
-    const opts:YT.PlayerOptions= {
-        width : "90%",
-        height : "90%",
-        videoId : get_yt_video_id(),
-        playerVars : <YT.PlayerVars>{
-            playsinline : 1
-        },
-        events :playerev
-    };
-
-    player = new YT.Player(player_div, opts);
-    const slider = <HTMLInputElement>document.getElementById("myRange");
-
-    // Update the current slider value (each time you drag the slider handle)
-    slider.oninput = function() :void{
-        const vid_len : number = player.getDuration()
-        player.seekTo(vid_len/Number(slider.max) * Number((this as HTMLInputElement).value),true);
-    }
-}
-
-(document.getElementById("yt_frame")).onYouTubeIframeAPIReady= onYouTubeIframeAPIReady;
-
-// 4. The API will call this function when the video player is ready.
-
-// 5. The API calls this function when the player's state changes.
-//    The function indicates that when playing a video (state=1),
-//    the player should play for six seconds and then stop.
 
 function onPlayerStateChange(event:YT.PlayerEvent):void{
     /**
@@ -152,6 +105,52 @@ function onPlayerStateChange(event:YT.PlayerEvent):void{
         }
     }
 }
+
+function youtube_load_video():void {
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = function(): void {
+        /**
+         * initialize the yt video
+         * @type {YT.Player}
+         */
+        const player_div = document.getElementById("player");
+
+
+        const playerev: YT.Events = {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange
+        };
+
+        const opts: YT.PlayerOptions = {
+            width: "100%",
+            height: "100%",
+            videoId: get_yt_video_id(),
+            playerVars: <YT.PlayerVars>{
+                playsinline: 1
+            },
+            events: playerev
+        };
+
+        player = new YT.Player(player_div, opts);
+        const slider = <HTMLInputElement>document.getElementById("myRange");
+
+        // Update the current slider value (each time you drag the slider handle)
+        slider.oninput = function (): void {
+            const vid_len: number = player.getDuration()
+            player.seekTo(vid_len / Number(slider.max) * Number((this as HTMLInputElement).value), true);
+        }
+    };
+
+    //window.onYouTubeIframeAPIReady = myonYouTubeIframeAPIReady
+}
+
+youtube_load_video();
+
+
 
 
 function reset_player():void{
@@ -180,6 +179,20 @@ function add_action_now(title:string):void{
     //pos = [event.offsetX, event.offsetY];
     record_frames.mouse_pos[Math.floor(time*fps)]= {x:mouse_pos.x,y:mouse_pos.y};
 }
+
+export function setup_canvas(player:YT.Player):void{
+    /**
+     * at startup
+     * @type {HTMLElement}
+     */
+    const canvas:HTMLElement = document.getElementById("pannel");
+
+    canvas.addEventListener("mousemove", mousemoveAction);
+
+    document.addEventListener('keydown', keyPressedAction);
+    //todo
+}
+
 
 
 function myloop():void{
