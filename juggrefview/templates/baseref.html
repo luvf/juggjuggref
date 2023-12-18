@@ -5,10 +5,25 @@
 <head>
     <meta charset="UTF-8">
     <!--<script type="text/javascript" language="javascript" src="{% static "juggjuggref.ts" %}"></script>-->
-    <script type="text/javascript" language="javascript" src="{% static "juggjuggref.js" %}"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "html_manipulation": "{% static "html_manipulation.js" %}",
+          "server_comunication": "{% static "server_communication.js" %}"
+
+        }
+      }
+</script>
+    
+    <script type="module" language="javascript" src="{% static "juggjuggref.js" %}"></script>
+    
+    <script>
+        let videoid = "{{ videoId }}"
+</script>
 
 
     <link rel="stylesheet" href="{% static "juggjuggref.css" %}">
+    
 
     <title>Game {{ game.name  }}</title>
 </head>
@@ -17,12 +32,22 @@
 
 <body>
 <h1><a href="{% url "home" %}">home</a>  </h1>
-    <input type="text" id="video_url" value="https://www.youtube.com/watch?v={{ videoId }}"/> <button type="button" onclick="set_url()">load new video</button>
+    <input type="text" id="video_url" value="https://www.youtube.com/watch?v={{ videoId }}"/> <button type="button" id="set_url">load new video</button>
 
     <div class="row">
         <div id="main_column">
             <div class="parent">
-                <div id="player"></div>
+                <div id="player">
+                   <!-- <iframe
+                            id ="yt_frame"
+                            type="text/html"
+                    width="90%"
+                    height="90%"
+                    src="https://www.youtube.com/embed/{{ videoId }}"
+                    frameBorder="0"
+                    data-allow="autoplay; encrypted-media"
+                    allowFullScreen></iframe> -->
+                </div>
                 <canvas id="pannel" class="pannel" width="1920" height="1080"  ></canvas>
             </div>
 
@@ -41,30 +66,30 @@
                         <option value="left">Goal Left</option>
                     </select><br>
                 <label>Record name : </label><input type="text" id="record_name">
-                <button type="button" onclick="submit_server()">submit</button>
-                    <button type="button" onclick="copy_record()">copy to clipboard</button>
+                <button type="button" id="submit_server">submit</button>
+                <button type="button" id="copy_record">copy to clipboard</button>
 
             </div>
             <div id="record_list">
             </div>
-             <div class="record" id="add_record"><button type="button" onclick="record_names()">import record</button></div>
-            <div id="drop" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);"> Drag and drop File</div>
+             <div class="record" id="add_record"><button type="button" id="record_names">import record</button></div>
+            <div id="drop"> Drag and drop File</div>
         </div>
     </div>
 
-
-
-
 <br>
+
+
 
 <span id="scoreboard">
 
     score (MSE) : <span id="mse"></span>
 </span>
 
-<script>
-    let videoid = "{{ videoId }}"
-</script>
+
+
+
+
 </body>
 
 </html>

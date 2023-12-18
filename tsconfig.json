@@ -12,6 +12,7 @@
       ],
       "types": [ "youtube" ]
         },
-    "files" : ["juggjuggref.ts"],
-    "include" :["juggrefview/scripts/juggrefview","static/"],
+    "files" : ["juggjuggref.ts","*.ts","server_communication.ts","juggrefview/scripts/*.ts" ],
+    "include" :["juggrefview/scripts","static/"],
+
 }
