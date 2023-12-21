@@ -3,9 +3,9 @@
 
 // <reference types="node" />
 //
-import {RecordPoint, RecordEvent, RefRecord} from "./record.js"
+import {RecordPoint, RecordEvent, RefRecord,refPosition} from "./record.js"
 import {Html_manipulation} from "./html_manipulation.js"
-import {record_names, submit_server, record_list,load_record} from "./server_communication.js"
+import {record_names, submit_server, RecordList, RecordInfo,load_record} from "./server_communication.js"
 import {onPlayerReady} from "./YT_manipulation.js"
 
 
@@ -17,35 +17,47 @@ class Controler{
     reference_hist:RefRecord;
     histories :RefRecord[];//{[key:number] : RefRecord};
     player : YT.Player;
-    mouse_pos :RecordPoint;
+    cur_mouse_pos :RecordPoint;
 
     view:Html_manipulation;
 
     private loopInterval:ReturnType<typeof setInterval>;
-    private fps=20;
+    private _fps;
 
 
     constructor() {
         this.record = new RefRecord(0);
-        this.reference_hist=null;
+        this.reference_hist;
         this.histories = [] as RefRecord[];
         this.view = new Html_manipulation();
 
-        window.onYouTubeIframeAPIReady = this.YTApiready;
+        window.onYouTubeIframeAPIReady = ()=>{this.YTApiready();};
 
         this.set_slider_control();
-        this.view.on_seturl             = this.set_url;
-        this.view.on_submit             = ()=>submit_server(this.view.get_yt_video_id(), this.record);
-        this.view.on_copy_clipboard     = ()=>{navigator.clipboard.writeText(this.record.get_json_record())};
-        this.view.on_load_names         = ()=>{record_names(this.view.get_yt_video_id(), this.load_record_names)};
-        this.view.on_click_load_record = ()=>{load_record(this.view.get_yt_video_id(),this.view.get_selected_record(),this.set_record)};
+        this.view.on_seturl             = ()=>{this.set_url();};
+        this.view.on_submit             = ()=>{this.set_record_infos();submit_server(this.view.get_yt_video_id(), this.record)};
+        this.view.on_copy_clipboard     = ()=>{this.set_record_infos();navigator.clipboard.writeText(this.record.get_json_record())};
+        this.view.on_load_names         = ()=>{
+            record_names(this.view.get_yt_video_id(),
+                (record_names:RecordList)=>{
+                this.load_record_names(record_names);}
+            );
+        };
+        this.view.on_click_load_record = (record:RecordInfo)=>{
+            load_record(record,
+                (new_record:RefRecord)=>{
+                this.set_record(new_record);}
+            );
+        };
 
+        this.view.on_file_drop = (new_record:RefRecord)=>{this.set_record(new_record);};
 
-        this.mouse_pos={x:0, y:0}
+        this.cur_mouse_pos= new RecordPoint(0,0);
+        this._fps=20;
     }
 
-    load_record_names(json_return:record_list){
-
+    load_record_names(json_return:RecordList){
+        this.view.build_record_names(json_return.record_names);
     }
 
     set_record(new_record:RefRecord) {
@@ -53,21 +65,25 @@ class Controler{
         if (this.reference_hist == null) {
             this.reference_hist = new_record;
         }
-
-        this.view.add_record(new_record, ()=>{this.reference_hist=new_record});
+        this.view.add_record(new_record, ()=>{this.reference_hist=new_record as RefRecord});
     }
 
-
+    set_record_infos():void{
+        this.record.name = (document.getElementById("record_name") as HTMLInputElement).value;
+        this.record.ref_position = (document.getElementById("position_select") as HTMLInputElement).value as refPosition;
+        this.record.author = "me";
+    }
     YTApiready():void{
         const player_div = this.view.get_player_div();//document.getElementById("player");
 
         const playerev: YT.Events = {
-            onReady: onPlayerReady,
-            onStateChange: onPlayerStateChange
+            onReady: (event:YT.PlayerEvent)=>{this.reset_player();},
+            onStateChange: (event:YT.PlayerEvent)=>{this.onPlayerStateChange(event);}
         };
         const opts: YT.PlayerOptions = {
-            width: "100%",
-            height: "100%",
+            height: "90%",
+            width: "90%",
+
             videoId: this.view.get_yt_video_id(),
             playerVars: <YT.PlayerVars>{
                 playsinline: 1
@@ -94,46 +110,8 @@ class Controler{
 
         this.player.pauseVideo();
     }
-
-    reset_player():void{
-        const length:number = this.player.getDuration();
-        const nb_record:number = length*fps;
-        this.record.reset_record(nb_record);
-
-        setup_canvas(this.player);
-    }
-    setup_canvas():void{
-        /**
-         * at startup
-         * @type {HTMLElement}
-         */
-        const canvas:HTMLElement = this.view.get_canvas();//document.getElementById("pannel");
-        canvas.addEventListener("mousemove", this.mousemoveAction);
-        document.addEventListener('keydown', this.keyPressedAction);
-    }
-
-    mousemoveAction(event:MouseEvent):void{
-        this.mouse_pos.x = event.offsetX;
-        this.mouse_pos.y = event.offsetY;
-    }
-    keyPressedAction(event:KeyboardEvent){
-        /**
-         * for the different keyboard events
-         */
-        const player:YT.Player =window.player;
-        if (event.key == " "){
-            if (player.getPlayerState()==1) {
-                player.pauseVideo();
-            }
-            else {
-                player.playVideo();
-            }
-        }
-        /*for (let b in actions){
-            if (event.key == b){
-                add_action_now(actions[b]);
-            }
-        }*/
+    onPlayerReady(event:YT.PlayerEvent):void{
+        this.reset_player();
     }
     onPlayerStateChange(event:YT.PlayerEvent):void{
         /**
@@ -141,7 +119,7 @@ class Controler{
          */
         const canvas = this.view.get_canvas(); //document.getElementById("pannel");
         if (this.player.getPlayerState()==1) {
-            this.loopInterval = setInterval(this.myloop, 10);
+            this.loopInterval = setInterval(()=>{this.myloop()}, 10);
             canvas.style.visibility = "visible"
         }
         else{
@@ -151,6 +129,48 @@ class Controler{
             }
         }
     }
+    reset_player():void{
+        const length:number = this.player.getDuration();
+        const nb_record:number = length*this._fps;
+        this.record.reset_record(nb_record);
+
+        this.setup_canvas();
+    }
+    setup_canvas():void{
+        /**
+         * at startup
+         * @type {HTMLElement}
+         */
+        const canvas:HTMLCanvasElement = this.view.get_canvas();//document.getElementById("pannel");
+        canvas.addEventListener("mousemove", (event:MouseEvent)=>{this.mousemoveAction(event);});
+
+        document.addEventListener("keydown",  (event:KeyboardEvent)=>{this.keyPressedAction(event);});
+    }
+
+    mousemoveAction(event:MouseEvent):void{
+        const canvas = this.view.get_canvas()
+        this.cur_mouse_pos= new RecordPoint(event.offsetX/canvas.offsetWidth,event.offsetY/canvas.offsetHeight)
+    }
+    keyPressedAction(event:KeyboardEvent){
+        /**
+         * for the different keyboard events
+         */
+        const player:YT.Player =window.player;
+        if (event.key == " "){
+            if (this.player.getPlayerState()==1) {
+                this.player.pauseVideo();
+            }
+            else {
+                this.player.playVideo();
+            }
+        }
+        /*for (let b in actions){
+            if (event.key == b){
+                add_action_now(actions[b]);
+            }
+        }*/
+    }
+
 
     add_action_now(title:string):void{
         /**
@@ -160,35 +180,8 @@ class Controler{
          */
         const time: number = this.player.getCurrentTime();
         //pos = [event.offsetX, event.offsetY];
-        this.record.events.push(new RecordEvent(this.mouse_pos, time, title))
+        this.record.events.push(new RecordEvent(this.cur_mouse_pos, time, title))
     }
-
-    load_local_file(filename:File){//Modify
-        /**
-         * load a file in drag and drop
-         * calls add_record
-         * @type {FileReader}
-         */
-        const reader = new FileReader();
-        reader.addEventListener(
-            "load",
-            () => {
-                const json_file : { } = JSON.parse(<string>reader.result);
-                const record_list:HTMLElement = document.getElementById("record_list");
-                const child_id:number = record_list.children.length;
-                const new_div:HTMLElement = document.createElement("div");
-                new_div.setAttribute("class", "record");
-                new_div.id = "new_record_"+ child_id;
-
-                record_list.appendChild(new_div);
-                add_record(json_file,child_id);
-            },
-            false,
-        );
-        reader.readAsText(filename);
-    }
-
-
 
 
 
@@ -198,34 +191,36 @@ class Controler{
          *
          * @type {number}
          */
-        const time  :number = this.player.getCurrentTime();
-        const frame : number = Math.floor(time*fps);
+        const video_time  :number = this.player.getCurrentTime();
+
+        const video_frame : number = Math.floor(video_time*this._fps);
+        const nb_frames = 5 * this._fps;
+
         const canvas:HTMLCanvasElement = this.view.get_canvas();//(document.getElementById("pannel") as HTMLCanvasElement);
 
         const ctx:RenderingContext = canvas.getContext("2d");
         const slider : HTMLInputElement = this.view.get_slider();//(document.getElementById("myRange") as HTMLInputElement);
 
-        this.record.mouse_pos[frame]= this.mouse_pos;
-
-        slider.value = (time/this.player.getDuration() * Number(slider.max)).toString();
+        this.record.mouse_pos[video_frame] = new RecordPoint(this.cur_mouse_pos.x,this.cur_mouse_pos.y) ;
+        //this.view.print_pos(this.cur_mouse_pos);
+        slider.value = (video_time/this.player.getDuration() * Number(slider.max)).toString();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        this.view.display_hist(this.record.mouse_pos, time, "blue");
+        const line = this.record.mouse_pos.slice(
+            Math.max(video_frame-nb_frames, 0),
+            video_frame)
+        this.view.draw_line(line, "blue");
         if(this.reference_hist != null) {
-            this.view.display_hist( this.reference_hist["mouse_pos"], time);
+            const ref_line = this.reference_hist.mouse_pos.slice(Math.max(video_frame-nb_frames, 0), video_frame)
+            this.view.draw_line(ref_line);
 
-            const dist = this.reference_hist.distance(this.record,"MSE");
+            const dist =this.record.distance(this.reference_hist,"MSE");
             this.view.set_metric("MSE", dist.toString());
 
         }
     }
 
-
 }
-
-
-
-
 
 var controler = new Controler();
 
@@ -233,40 +228,3 @@ var controler = new Controler();
 
 
 
-function myDropHandler(ev: DragEvent):void {
-    /**
-     * helper for the drag and drop
-     */
-  console.log("File(s) dropped");
-
-  // Prevent default behavior (Prevent file from being opened)
-  ev.preventDefault();
-
-  if (Array.isArray(ev.dataTransfer.items)) {
-    // Use DataTransferItemList interface to access the file(s)
-    [...ev.dataTransfer.items].forEach((item, i) => {
-      // If dropped items aren't files, reject them
-      if (item.kind === "file") {
-        const file = item.getAsFile();
-        load_local_file(file);
-      }
-    });
-  } else {
-    // Use DataTransfer interface to access the file(s)
-        for (const file in ev.dataTransfer.files){
-            load_local_file(ev.dataTransfer.files[file]);
-        }
-  }
-}
-
-function myDragOverHandler(ev:Event) :void{
-  ev.preventDefault();
-}
-
-
-
-//----- Display
-
-
-document.getElementById("drop").addEventListener("dragover", myDragOverHandler);
-document.getElementById("drop").addEventListener("drop", myDropHandler);

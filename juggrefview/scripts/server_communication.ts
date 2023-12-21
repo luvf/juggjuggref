@@ -5,8 +5,15 @@ import {RefRecord} from "./record.js"
 
 
 
-export interface record_list{
-    records :{ref_pos: string, name:string, url?:string}[];
+export interface RecordInfo{
+    ref_pos: string,
+    video_id:string,
+    name:string,
+    url?:string
+}
+
+export interface RecordList {
+    record_names :RecordInfo[];
 }
 
 export async function submit_server(video_id:string, record:RefRecord){
@@ -28,7 +35,7 @@ export async function submit_server(video_id:string, record:RefRecord){
 }
 
 
-export async function record_names(video_id:string, callback:({})=>void){
+export async function record_names(video_id:string, callback:(value:RecordList)=>void){
     /**
      * ask the server the records for the current video :
      * url = [...]record_names/<YT code>/
@@ -46,15 +53,14 @@ export async function record_names(video_id:string, callback:({})=>void){
         },
     });
 
-    let json_file = await response.json();
+    const json_file = (await response.json()) as RecordList;
     callback(json_file);
 }
 
 
 
 
-export async function load_record(video_id:string,
-                           record_id:{ref_pos:string,name:string},
+export async function load_record(record_id:RecordInfo,
                            callback:(json_file:RefRecord)=>void){
     /**
      * ask a specific record to the server :
@@ -65,7 +71,7 @@ export async function load_record(video_id:string,
 
     const url:string =
         "load_record/" +
-        video_id+"/"+
+        record_id.video_id+"/"+
         record_id.ref_pos+"/"+
         record_id.name+"/";
 

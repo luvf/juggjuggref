@@ -3,9 +3,13 @@
 
 
 
-export interface RecordPoint{
+export class RecordPoint{
     x:number;
     y:number;
+    constructor(x:number=0,y:number=0) {
+        this.x = x;
+        this.y = y;
+    }
 }
 
 export function MSE(list1:RecordPoint[], list2:RecordPoint[]):number{
@@ -66,7 +70,7 @@ export class RefRecord{
     reset_record(length:number){
         this.mouse_pos = [];
         for (let i = 0; i<length;i++){
-            this.mouse_pos.push({x:-1,y:-1});
+            this.mouse_pos.push(new RecordPoint(-1,-1));
         }
     }
 

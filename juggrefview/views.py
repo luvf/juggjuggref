@@ -13,10 +13,9 @@ def basejugref(request):
     return render(request, template_name, context)
 
 
-from ast import literal_eval
 
 def submit_record(request,video_url):
-    jsonvalue = json.loads(literal_eval(request.body.decode('utf8')))
+    jsonvalue = json.loads(request.body.decode('utf8'))
 
     author = jsonvalue["author"]
     refpos = jsonvalue["ref_position"]
@@ -30,13 +29,13 @@ def submit_record(request,video_url):
 
     return  HttpResponse('')
 def record_names(request, video_url):
-    context = {"recordsnames" : list()}
+    context = {"record_names" : list()}
 
     game = Game.objects.get(url=video_url)
     records = RefView.objects.filter(game= game)
 
     for r in records:
-        context["recordsnames"].append({"name":r.name, "ref_position":r.position})
+        context["record_names"].append({"name":r.name, "ref_pos":r.position, "video_id":game.url})
 
     return JsonResponse(context)
 
