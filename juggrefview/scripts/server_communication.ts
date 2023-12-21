@@ -1,17 +1,21 @@
 // @filename: server_comunication.ts
 
 
-import {get_json_record, set_record_names,add_record,get_yt_video_id} from "./html_manipulation.js"
-import {record_frames} from "./record.js"
+import {RefRecord} from "./record.js"
 
 
-export async function submit_server(){
+
+export interface record_list{
+    records :{ref_pos: string, name:string, url?:string}[];
+}
+
+export async function submit_server(video_id:string, record:RefRecord){
     /**
      * submit a record to the server
      * url : [...]submit_record/<YT code>/
      */
     const url : string = "submit_record/" +
-        get_yt_video_id()+"/";
+        video_id+"/";
 
     const response = await fetch(url, {
         method : "POST",
@@ -19,12 +23,12 @@ export async function submit_server(){
             'Accept': 'application/json',
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify(get_json_record(record_frames.mouse_pos))
+        body: JSON.stringify(record),
     });
 }
 
 
-export async function record_names(){
+export async function record_names(video_id:string, callback:({})=>void){
     /**
      * ask the server the records for the current video :
      * url = [...]record_names/<YT code>/
@@ -33,7 +37,7 @@ export async function record_names(){
      */
 
     const url:string = "record_names/" +
-        get_yt_video_id() + "/";
+        video_id + "/";
 
     const response = await fetch(url, {
         method: "GET",
@@ -43,28 +47,27 @@ export async function record_names(){
     });
 
     let json_file = await response.json();
-    set_record_names(json_file);
+    callback(json_file);
 }
 
 
 
 
-async function load_record(record_id:number=0){
+export async function load_record(video_id:string,
+                           record_id:{ref_pos:string,name:string},
+                           callback:(json_file:RefRecord)=>void){
     /**
      * ask a specific record to the server :
      * url = [...]load_record/<YT code>/<Ref position>/<record name>/
      * then pass it to add_record
      * @type {HTMLElement}
      */
-    const option = <HTMLOptionElement>document.getElementById("record_names_"+record_id);
-    const value :string =  option.value;
-    const split :string[] = value.split(':');
 
     const url:string =
         "load_record/" +
-        get_yt_video_id()+"/"+
-        split[0]+"/"+
-        split[1]+"/";
+        video_id+"/"+
+        record_id.ref_pos+"/"+
+        record_id.name+"/";
 
     const response = await fetch(url, {
         method : "GET",
@@ -73,15 +76,8 @@ async function load_record(record_id:number=0){
         },
     });
 
-    const parrent_div = document.getElementById("new_record_"+record_id);
+    callback(await response.json());
 
-    let json_file =  await response.json();
-
-     while (parrent_div.lastElementChild) {
-        parrent_div.removeChild(parrent_div.lastElementChild);
-        //const child = parrent_div.lastElementChild;
-    }
-    add_record(json_file,record_id );
 }
 
 

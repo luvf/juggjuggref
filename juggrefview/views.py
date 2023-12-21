@@ -27,6 +27,7 @@ def submit_record(request,video_url):
     new_ref_view = RefView(name=record_name, author=author, game=game,position=refpos,json_record=jsonvalue)
 
     new_ref_view.save()
+
     return  HttpResponse('')
 def record_names(request, video_url):
     context = {"recordsnames" : list()}

@@ -9,14 +9,16 @@
       {
         "imports": {
           "html_manipulation": "{% static "html_manipulation.js" %}",
-          "server_comunication": "{% static "server_communication.js" %}"
+          "server_comunication": "{% static "server_communication.js" %}",
+          "YT_manipulation": "{% static "YT_manipulation.js" %}"
 
         }
       }
 </script>
     
     <script type="module" language="javascript" src="{% static "juggjuggref.js" %}"></script>
-    
+        <script type="module" language="javascript" src="{% static "YT_manipulation.js" %}"></script>
+
     <script>
         let videoid = "{{ videoId }}"
 </script>
@@ -38,15 +40,7 @@
         <div id="main_column">
             <div class="parent">
                 <div id="player">
-                   <!-- <iframe
-                            id ="yt_frame"
-                            type="text/html"
-                    width="90%"
-                    height="90%"
-                    src="https://www.youtube.com/embed/{{ videoId }}"
-                    frameBorder="0"
-                    data-allow="autoplay; encrypted-media"
-                    allowFullScreen></iframe> -->
+               
                 </div>
                 <canvas id="pannel" class="pannel" width="1920" height="1080"  ></canvas>
             </div>
@@ -83,7 +77,7 @@
 
 <span id="scoreboard">
 
-    score (MSE) : <span id="mse"></span>
+    score (MSE) : <span id="metric"></span>
 </span>
 
 
