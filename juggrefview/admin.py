@@ -5,7 +5,13 @@ from .models import *
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ["name", "url"]
+    list_display = ["name", "video_id"]
+
+@admin.register(PointReview)
+class PointReviewAdmin(admin.ModelAdmin):
+    list_display = ["game", "start", "end"]
+
+
 
 
 @admin.register(RefView)

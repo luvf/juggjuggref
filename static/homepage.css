@@ -1,0 +1,42 @@
+
+table{
+    padding: 10em;
+    border-radius: 20px;
+
+}
+
+tr{
+    margin:1em;
+    border:solid 1px;
+    border-radius: 5px;
+
+}
+
+th{
+    padding:2px;
+    border:solid 1px;
+}
+
+td
+{
+    padding: 0.5em ;
+        border:solid 1px;
+
+    border-radius: 2px;
+
+}
+
+
+
+.miniature{
+    height: 5em;
+
+
+}
+
+
+.image_cell {
+    margin:0px 0px 0px;
+    padding:0px;
+
+}

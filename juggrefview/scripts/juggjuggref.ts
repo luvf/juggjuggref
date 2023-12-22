@@ -91,7 +91,6 @@ class Controler{
             events: playerev
         };
         this.player = new YT.Player(player_div, opts);
-
     }
     set_slider_control(): void {
         const slider:HTMLInputElement = this.view.get_slider();//<HTMLInputElement>document.getElementById("myRange");

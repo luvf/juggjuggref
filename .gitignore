@@ -51,6 +51,11 @@ coverage.xml
 .pytest_cache/
 cover/
 
+#JS
+.js
+static/juggjuggref_old_.js
+
+
 # Translations
 *.mo
 *.pot

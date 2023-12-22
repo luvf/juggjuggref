@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 import json
 # Create your models here.
@@ -7,10 +8,18 @@ import uuid
 
 
 class Game(models.Model):
-    url = models.CharField(max_length=200)
+    video_id = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
+
+
     def __str__(self):
         return self.name
+
+
+class PointReview(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    start = models.IntegerField(default=0,db_comment="start Time Code of the review")
+    end = models.IntegerField(default=0,db_comment="end Time Code of the review")
 
 
 

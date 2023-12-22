@@ -1,12 +1,40 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="{% static "juggjuggref.css" %}">
+    <link rel="stylesheet" href="{% static "homepage.css" %}">
+
     <title>home</title>
+
 </head>
 <body>
 
-<a href="{% url "juggrefview:ref_tool" %}">Ref View</a>
+
+    <table id="game_list">
+        <tr>
+            <th>miniature</th>
+            <th>Name</th>
+            <th>url</th>
+            <th>number of records</th>
+            <th>infos</th>
+
+        </tr>
+        {% for game in games %}
+        <tr class='clickable-row' >
+                <td class="image_cell"> <img class="miniature" src="http://img.youtube.com/vi/{{game.videoId}}/mqdefault.jpg"></td>
+
+                <td class="table_name"><a href="{% url "juggrefview:ref_tool" game.videoId %}">{{ game.name }}</a></td>
+                <td class="game">{{ game.videoId }}</td>
+                <td class="number of records">{{ game.n_records }}</td>
+                <td>{{ game.start_time }}, {{ game.start_time }}, length</td>
+
+        </tr>
+        {% endfor %}
+    </table>
 
 </body>
 </html>

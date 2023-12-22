@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from django.shortcuts import render
 
 urlpatterns = [
-    path("", lambda x : render(x,"home.html" ,{}),name="home"),
+    #path("", lambda x : render(x,"home.html" ,{}), name="home"),
     path("admin/", admin.site.urls),
-    path("juggrefview/", include("juggrefview.urls")),
+    path("", include("juggrefview.urls")),
 ]

@@ -4,7 +4,8 @@ from . import views
 
 app_name = "juggrefview"
 urlpatterns = [
-    path("", views.basejugref, name="ref_tool"),
+    path("", views.index, name="home"),
+    path("reffview/<str:videoId>", views.basejugref, name="ref_tool"),
 
     path("submit_record/<str:video_url>/", views.submit_record, name="submit_record"),
     #path("record_names", views.record_names, name="record_names"),
