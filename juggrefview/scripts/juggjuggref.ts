@@ -44,16 +44,16 @@ class Controler{
         //window.onYouTubeIframeAPIReady = ()=>{this.YTApiready();};
 
         this.set_slider_control();
-        this.view.on_submit             = ()=>{this.set_record_infos();submit_server(this.videoId, this.start_time, this.record)};
+        this.view.on_submit             = ()=>{this.set_record_infos();submit_server(this.videoId, this.start_tc, this.record)};
         this.view.on_copy_clipboard     = ()=>{this.set_record_infos();navigator.clipboard.writeText(this.record.get_json_record())};
         this.view.on_load_names         = ()=>{
-            record_names(this.videoId, this.start_time,
+            record_names(this.videoId, this.start_tc,
                 (record_names:RecordList)=>{
                 this.load_record_names(record_names);}
             );
         };
         this.view.on_click_load_record = (record:RecordInfo)=>{
-            load_record(record, this.start_time,
+            load_record(record, this.start_tc,
                 (new_record:RefRecord)=>{
                 this.set_record(new_record);}
             );
@@ -173,7 +173,6 @@ class Controler{
         this.record.events.push(new RecordEvent(this.cur_mouse_pos, time, title))
     }
 
-    set slider_value()
 
     myloop():void{
         /**
@@ -194,7 +193,7 @@ class Controler{
         this.record.mouse_pos[video_frame] = new RecordPoint(this.cur_mouse_pos.x,this.cur_mouse_pos.y) ;
         //this.view.print_pos(this.cur_mouse_pos);
         //slider.value = (video_time/this.player.getDuration() * Number(slider.max)).toString();
-        slider.value = ((video_time-this.start_tc)/(this.end_tc-this.start_tc) * Number(slider.max))).toString();
+        slider.value = ((video_time-this.start_tc)/(this.end_tc-this.start_tc) * Number(slider.max)).toString();
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 

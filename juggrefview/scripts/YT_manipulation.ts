@@ -20,7 +20,7 @@ export class YT_manipulation{
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 
-        window.onYouTubeIframeAPIReady = ()=>{this.YTApiready(this.view.get_review_start_tc(), view.get_review_end_tc();};
+        window.onYouTubeIframeAPIReady = ()=>{this.YTApiready(this.view.get_review_start_tc(), view.get_review_end_tc());};
     }
 
     YTApiready(start:number, stop:number):void{
@@ -47,7 +47,7 @@ export class YT_manipulation{
     }
 
     onStateChange(event:YT.PlayerEvent) {
-        this.on_player_state_change();
+        this.on_player_state_change(event);
         if (this.getPlayerState() == 1) {
             const current_time = this.getCurrentTime();
             console.log(current_time, this.view.get_review_start_tc(), this.view.get_review_end_tc())

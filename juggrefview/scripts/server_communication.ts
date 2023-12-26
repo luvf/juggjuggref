@@ -61,7 +61,7 @@ export async function record_names(video_id:string, start_tc:number, callback:(v
 
 
 
-export async function load_record(record_id:RecordInfo, start
+export async function load_record(record_id:RecordInfo, start:number,
                            callback:(json_file:RefRecord)=>void){
     /**
      * ask a specific record to the server :
