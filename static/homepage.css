@@ -1,42 +1,63 @@
+:root {
+  --home_radius: 5px;
+}
+
+.overTable{
+        padding: 10em;
+
+}
+
 
 table{
-    padding: 10em;
-    border-radius: 20px;
+    /*border-radius: 5px;*/
+
+}
+
+tr:hover{
+    background-color: lightblue;
+        cursor: pointer;
 
 }
 
 tr{
-    margin:1em;
-    border:solid 1px;
-    border-radius: 5px;
 
 }
 
+
+
 th{
-    padding:2px;
-    border:solid 1px;
+
+    padding:1px;
+    /*border:solid 1px;*/
+    background-color: cornflowerblue;
+}
+
+.record_number{
+    text-align:center;
+    padding:1px;
+}
+
+p{
+    margin: 0px;
+    line-height:0px;
 }
 
 td
 {
-    padding: 0.5em ;
-        border:solid 1px;
-
-    border-radius: 2px;
+    padding: 0,5em ;
 
 }
 
 
-
 .miniature{
-    height: 5em;
-
+    width: 10em;
+    padding:0px;
+    border-radius: var(--home_radius);
+    vertical-align: middle;
 
 }
 
 
 .image_cell {
-    margin:0px 0px 0px;
     padding:0px;
-
 }

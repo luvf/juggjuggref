@@ -16,26 +16,26 @@ export interface RecordList {
     record_names :RecordInfo[];
 }
 
-export async function submit_server(video_id:string, record:RefRecord){
+export async function submit_server(video_id:string, start_tc:number, record:RefRecord){
     /**
      * submit a record to the server
      * url : [...]submit_record/<YT code>/
      */
-    const url : string = "submit_record/" +
-        video_id+"/";
-
+    const url : string = "/submit_record/" +
+        video_id+"/"+
+        String(start_tc)+"/";
     const response = await fetch(url, {
         method : "POST",
         headers: {
             'Accept': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': getCookie('csrftoken'),
         },
         body: JSON.stringify(record),
     });
 }
 
 
-export async function record_names(video_id:string, callback:(value:RecordList)=>void){
+export async function record_names(video_id:string, start_tc:number, callback:(value:RecordList)=>void){
     /**
      * ask the server the records for the current video :
      * url = [...]record_names/<YT code>/
@@ -43,8 +43,9 @@ export async function record_names(video_id:string, callback:(value:RecordList)=
      * @type {HTMLElement}
      */
 
-    const url:string = "record_names/" +
-        video_id + "/";
+    const url:string = "/record_names/" +
+        video_id + "/"+
+        String(start_tc)+"/";
 
     const response = await fetch(url, {
         method: "GET",
@@ -60,7 +61,7 @@ export async function record_names(video_id:string, callback:(value:RecordList)=
 
 
 
-export async function load_record(record_id:RecordInfo,
+export async function load_record(record_id:RecordInfo, start
                            callback:(json_file:RefRecord)=>void){
     /**
      * ask a specific record to the server :
@@ -70,8 +71,9 @@ export async function load_record(record_id:RecordInfo,
      */
 
     const url:string =
-        "load_record/" +
+        "/load_record/" +
         record_id.video_id+"/"+
+        String(start)+"/"+
         record_id.ref_pos+"/"+
         record_id.name+"/";
 

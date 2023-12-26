@@ -1,31 +1,20 @@
 <!DOCTYPE html>
 {% load static %}
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <!--<script type="text/javascript" language="javascript" src="{% static "juggjuggref.ts" %}"></script>-->
-    <script type="importmap">
-      {
-        "imports": {
-          "html_manipulation": "{% static "html_manipulation.js" %}",
-          "server_comunication": "{% static "server_communication.js" %}",
-          "YT_manipulation": "{% static "YT_manipulation.js" %}"
 
-        }
-      }
-</script>
-    
-    <script type="module" language="javascript" src="{% static "juggjuggref.js" %}"></script>
-        <script type="module" language="javascript" src="{% static "YT_manipulation.js" %}"></script>
-
-    <script>
-        let videoid = "{{ videoId }}"
-</script>
+    <script id="juggjuggref_script" type="module"
+            src = "{% static "juggjuggref.js" %}"
+            data-videoid = "{{ videoId }}"
+            data-start_tc = "{{ review.start }}"
+            data-end_tc = "{{ review.end }}"></script>
+    <script type="module" language="javascript" src="{% static "YT_manipulation.js" %}"></script>
 
 
     <link rel="stylesheet" href="{% static "juggjuggref.css" %}">
-    
+
 
     <title>Game {{ game.name  }}</title>
 </head>
@@ -34,7 +23,6 @@
 
 <body>
 <h1><a href="{% url "juggrefview:home" %}">home</a>  </h1>
-    <input type="text" id="video_url" value="https://www.youtube.com/watch?v={{ videoId }}"/> <button type="button" id="set_url">load new video</button>
 
     <div class="row">
         <div id="main_column">

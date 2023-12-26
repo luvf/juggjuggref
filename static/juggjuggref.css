@@ -1,9 +1,13 @@
+:root {
+  --video_size: 100%;
+
+}
 
 
 .parent {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 1080px;
     margin: 10px;
 }
 
@@ -16,14 +20,21 @@
     background: red;
 }
 
+
+iframe{
+    width: var(--video_size);
+
+    height: var(--video_size);
+}
+
 .pannel {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 3;
 
-    width: 90%;
-    height: 90%;
+    width: var(--video_size);
+    height: var(--video_size);
     margin: 0px 0px 0px 0px;
     background: white;
     opacity: 0.2;
@@ -38,8 +49,9 @@
 }
 
 #main_column {
-    width: 2100px;
-    height: 1100px;
+    width: 1920px;
+    height: 1120px;
+    margin:1em;
 }
 
 .side_column{
@@ -60,12 +72,9 @@
     margin:1px;
     border:solid 1px;
     border-radius: 5px;
-
-
 }
 
 .record{
-
     padding: 1em 0.5em 1em 0.5em;
     border:solid;
     margin:1px;

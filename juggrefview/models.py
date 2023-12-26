@@ -21,7 +21,8 @@ class PointReview(models.Model):
     start = models.IntegerField(default=0,db_comment="start Time Code of the review")
     end = models.IntegerField(default=0,db_comment="end Time Code of the review")
 
-
+    def __str__(self):
+        return self.game.name +" - " + str(self.start)+" - "+ str(self.end)
 
 class RefView(models.Model):
     REFPOS = [
@@ -34,7 +35,7 @@ class RefView(models.Model):
 
     name = models.CharField(max_length=100)
     author = models.CharField(max_length=100)
-    game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True)
+    point_reviewed = models.ForeignKey(PointReview, on_delete=models.SET_NULL, null=True)
     description = models.CharField(max_length=400)
 
     position = models.CharField(max_length=30,choices=REFPOS)

@@ -1,4 +1,4 @@
-// @filename: server_comunication.ts
+// @filename: html_manipulation.ts
 
 import {RecordPoint, refPosition, RefRecord} from "./record.js"
 
@@ -10,7 +10,6 @@ export class Html_manipulation{
     private _slider:HTMLInputElement;
     private _record_list:HTMLElement;
 
-    on_seturl : ()=>void;
     on_submit : ()=>void;
     on_copy_clipboard : ()=>void;
     on_load_names : ()=>void;
@@ -25,18 +24,22 @@ export class Html_manipulation{
         this._record_list = document.getElementById("record_list");
         this._slider = document.getElementById("myRange")as HTMLInputElement;
 
-
-        (document.getElementById("record_names") as HTMLInputElement).addEventListener("click", ()=>{this.on_load_names();});
-        (document.getElementById("copy_record") as HTMLInputElement).addEventListener("click", ()=>{this.on_copy_clipboard();});
-        (document.getElementById("submit_server") as HTMLInputElement).addEventListener("click", ()=>{this.on_submit();});
-        (document.getElementById("set_url") as HTMLInputElement).addEventListener("click",()=>{ this.on_seturl();});
-
+        this.add_click_listener("record_names", ()=>{this.on_load_names();});
+        this.add_click_listener("copy_record",  ()=>{this.on_copy_clipboard();});
+        this.add_click_listener("submit_server",()=>{this.on_submit();});
 
         document.getElementById("drop").addEventListener("dragover", (ev:Event)=>{ev.preventDefault();});
         document.getElementById("drop").addEventListener("drop", (ev: DragEvent)=>{ this.myDropHandler(ev);});
 
-
     }
+
+    private add_click_listener(element_id:string, fun:()=>void):void{//as_type:HTMLElement=HTMLInputElement
+        const element = (document.getElementById(element_id));
+        if (element){
+            element.addEventListener("click", fun);
+        }
+    }
+
 
     get_canvas():HTMLCanvasElement {
         return this._canvas;
@@ -58,11 +61,22 @@ export class Html_manipulation{
         /**
          * find the yt video url
          */
-        const url : string = (document.getElementById("video_url") as HTMLInputElement).value
-        const urlsliced : string[] = url.split('=');
-        return urlsliced.slice(-1)[0];
-
+        return document.getElementById("juggjuggref_script").dataset.videoid;
     }
+
+    get_review_start_tc():number{
+        /**
+         * find the point to record
+         */
+        return parseInt(document.getElementById("juggjuggref_script").dataset.start_tc);
+    }
+    get_review_end_tc():number{
+        /**
+         * find the point to record
+         */
+        return parseInt(document.getElementById("juggjuggref_script").dataset.end_tc);
+    }
+
     myDropHandler(ev: DragEvent):void {
         /**
          * helper for the drag and drop
@@ -191,21 +205,23 @@ export class Html_manipulation{
         /**
          * print an history on the canvas
          *
-         */
-        const first = frames[0];
-        const ctx:RenderingContext = this._canvas.getContext("2d");
+          */
+        if (frames.length){
+            const first = frames[0];
+            const ctx:RenderingContext = this._canvas.getContext("2d");
 
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(first.x*this._canvas.width, first.y*this._canvas.height);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(first.x*this._canvas.width, first.y*this._canvas.height);
 
-        for(const frame of frames){
-            if (frame.x!==-1 ) {
-                ctx.lineTo(frame.x*this._canvas.width, frame.y*this._canvas.height);
+            for(const frame of frames){
+                if (frame.x!==-1 ) {
+                    ctx.lineTo(frame.x*this._canvas.width, frame.y*this._canvas.height);
+                }
             }
+            ctx.stroke();
         }
-        ctx.stroke();
     }
 }
 

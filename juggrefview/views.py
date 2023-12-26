@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from .models import RefView, Game
+from .models import RefView, Game,PointReview
+
 # Create your views here.
 import json
 from datetime import time
@@ -8,18 +9,18 @@ from datetime import time
 
 def index(request):
 
-    games = list()
-    for g in Game.objects.all():
-        games.append({
-            "videoId": g.video_id,
-            "name": g.name,
-            "n_records": RefView.objects.filter(game=g).count(),
-            #"start_time": g.start_time,
-            #"end_time": g.end,
-            #"length": g.end-g.start
+    points = list()
+    for point in PointReview.objects.all():
+        points.append({
+            "videoId": point.game.video_id,
+            "name": point.game.name,
+            "n_records": RefView.objects.filter(point_reviewed=point).count(),
+            "start_time": point.start,
+            "end_time": point.end,
+            "length": point.end-point.start
         })
 
-    context={'games':games}
+    context={'reviews':points}
 
     return render(request,"home.html" ,context)
 
@@ -28,55 +29,61 @@ def index(request):
 
 
 
-def basejugref(request, videoId):
+def basejugref(request, videoId, start):
 
     template_name = "baseref.html"
 
     game = Game.objects.get(video_id=videoId);
+    review = PointReview.objects.get(game=game, start=start)
     #tournaments = Tournament.objects.order_by("-date")
 
-    context = {"videoId": game.video_id}
+    context = {"videoId": game.video_id, "review": review}
     return render(request, template_name, context)
 
 
 
-def submit_record(request,video_id):
+def submit_record(request, videoId, start):
     jsonvalue = json.loads(request.body.decode('utf8'))
 
     author = jsonvalue["author"]
     refpos = jsonvalue["ref_position"]
     record_name = jsonvalue["name"]
 
-    game = Game.objects.get(video_id=video_id)
+    review = PointReview.objects.get(game__video_id=videoId, start=start)
+    if review:
+        new_ref_view = RefView(name=record_name, author=author, point_reviewed=review,position=refpos,json_record=jsonvalue)
 
-    new_ref_view = RefView(name=record_name, author=author, game=game,position=refpos,json_record=jsonvalue)
+        new_ref_view.save()
 
-    new_ref_view.save()
+        return HttpResponse('',status=201)
+    else:
+        return HttpResponse('',status=404)
 
-    return  HttpResponse('')
-def record_names(request, video_id):
+def record_names(request, videoId, start):
     context = {"record_names" : list()}
 
-    game = Game.objects.get(video_id=video_id)
-    records = RefView.objects.filter(game= game)
+    review = PointReview.objects.get(game__video_id=videoId,start=start)
+    records = RefView.objects.filter(point_reviewed=review)
 
     for r in records:
-        context["record_names"].append({"name":r.name, "ref_pos":r.position, "video_id":game.video_id})
+        context["record_names"].append({"name":r.name, "ref_pos":r.position, "video_id":videoId})
 
-    return JsonResponse(context)
+    return JsonResponse(context, status=200)
 
-def load_record(request, video_url, position, record_name):
-    """ ""
-    context = {}
-    if "video_url" in request.GET and "record_name" in request.GET and "refPos" in request.GET:
-        video_url = request.GET["video_url"]
-        record_name = request.GET["record_name"]
-        position = request.GET["refPos"]"""
-    if True:
-        game = Game.objects.get(video_id=video_url)
-        record = RefView.objects.filter(game= game, position=position,name=record_name)[0]
-        context = record.json_record
-    return JsonResponse(context)
+def load_record(request, videoId, start, position, record_name):
+    """"
+    :param videoId:
+    :param start:
+    :param position:
+    :param record_name:
+    
+    """
+    game = Game.objects.get(video_id=videoId)
+    review = PointReview.objects.get(game__video_id=videoId, start=start)
+
+    record = RefView.objects.filter(point_reviewed=review, position=position,name=record_name)[0]
+    context = record.json_record
+    return JsonResponse(context, status=200)
 
 
 

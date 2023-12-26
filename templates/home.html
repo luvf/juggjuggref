@@ -13,28 +13,34 @@
 </head>
 <body>
 
-
+    <div class="overTable">
     <table id="game_list">
-        <tr>
-            <th>miniature</th>
-            <th>Name</th>
-            <th>url</th>
-            <th>number of records</th>
-            <th>infos</th>
+        <thead>
+            <tr>
+                <th>miniature</th>
+                <th>Name</th>
+                {% comment %}<th>url</th>  {% endcomment %}
+                <th>number of records</th>
+                <th>infos</th>
 
-        </tr>
-        {% for game in games %}
-        <tr class='clickable-row' >
-                <td class="image_cell"> <img class="miniature" src="http://img.youtube.com/vi/{{game.videoId}}/mqdefault.jpg"></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for point_review in reviews %}
+            <tr class='clickable-row' onclick="document.location='{% url "juggrefview:ref_tool" videoId=point_review.videoId start=point_review.start_time %}'" >
+                <td class="image_cell"> <img class="miniature" src="http://img.youtube.com/vi/{{point_review.videoId}}/mqdefault.jpg"></td>
 
-                <td class="table_name"><a href="{% url "juggrefview:ref_tool" game.videoId %}">{{ game.name }}</a></td>
-                <td class="game">{{ game.videoId }}</td>
-                <td class="number of records">{{ game.n_records }}</td>
-                <td>{{ game.start_time }}, {{ game.start_time }}, length</td>
-
-        </tr>
-        {% endfor %}
+                <td class="table_name">{{ point_review.name }}</td>
+                {% comment %}<td class="point_review">{{ point_review.videoId }}</td>{% endcomment %}
+                <td class="record_number">{{ point_review.n_records }}</td>
+                <td class="timecodes">
+                    <p>start : {{ point_review.start_time }}</p><br>
+                    <p>end : {{ point_review.end_time }}</p><br>
+                    <p>Length: {{ point_review.length }}</p></td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-
+    </div>
 </body>
 </html>
