@@ -19,6 +19,6 @@ You can also download other recordings from the server, see what they would have
 ## TODOs :
  - User interface : it is functionnal so far, not very practical.
  - User management on the server side : to be able to publish it on the web.
- - Video Management : have a library of games.
+ - Video Management : user can propose game and points to ref.
  - Better scoring system.
  - Adding other events : player went up too early...
