@@ -1,8 +1,7 @@
-// @filename: server_comunication.ts
+// @filename: server_communication.ts
 
 
 import {RefRecord} from "./record.js"
-
 
 
 export interface RecordInfo{
@@ -23,7 +22,7 @@ export async function submit_server(video_id:string, start_tc:number, record:Ref
      */
     const url : string = "/submit_record/" +
         video_id+"/"+
-        String(start_tc)+"/";
+        start_tc.toString()+"/";
     const response = await fetch(url, {
         method : "POST",
         headers: {
@@ -39,13 +38,13 @@ export async function record_names(video_id:string, start_tc:number, callback:(v
     /**
      * ask the server the records for the current video :
      * url = [...]record_names/<YT code>/
-     * expects a in "recordsnames" a list of dicts {ref_position, record_name}
+     * expects a "records_names" a list of dicts {ref_position, record_name}
      * @type {HTMLElement}
      */
 
     const url:string = "/record_names/" +
         video_id + "/"+
-        String(start_tc)+"/";
+        start_tc.toString()+"/";
 
     const response = await fetch(url, {
         method: "GET",

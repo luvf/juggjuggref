@@ -21,11 +21,10 @@ class Controler{
     cur_mouse_pos :RecordPoint;
 
     videoId : string;
-    start_tc:number;
-    end_tc:number;
+    start_tc : number;
+    end_tc :number;
     
     view:Html_manipulation;
-
     private loopInterval:ReturnType<typeof setInterval>;
     private _fps;
 
@@ -38,14 +37,12 @@ class Controler{
 
         this.start_tc       = this.view.get_review_start_tc();
         this.end_tc         = this.view.get_review_end_tc();
+
         this.videoId        = this.view.get_yt_video_id();
 
-
-        //window.onYouTubeIframeAPIReady = ()=>{this.YTApiready();};
-
         this.set_slider_control();
-        this.view.on_submit             = ()=>{this.set_record_infos();submit_server(this.videoId, this.start_tc, this.record)};
-        this.view.on_copy_clipboard     = ()=>{this.set_record_infos();navigator.clipboard.writeText(this.record.get_json_record())};
+        this.view.on_submit             = ()=>{this.set_record_infos();submit_server(this.videoId, this.start_tc, this.record);};
+        this.view.on_copy_clipboard     = ()=>{this.set_record_infos();navigator.clipboard.writeText(this.record.get_json_record());};
         this.view.on_load_names         = ()=>{
             record_names(this.videoId, this.start_tc,
                 (record_names:RecordList)=>{
@@ -66,10 +63,9 @@ class Controler{
         this._fps=20;
 
         this.player = new YT_manipulation(this.view);
+
         this.player.on_player_ready= (event:YT.PlayerEvent)=>{this.reset_record()};
         this.player.on_player_state_change = (event:YT.PlayerEvent)=>{this.onPlayerStateChange(event)};
-
-
     }
 
     load_record_names(json_return:RecordList){
@@ -94,11 +90,8 @@ class Controler{
     set_slider_control(): void {
         const slider:HTMLInputElement = this.view.get_slider();//<HTMLInputElement>document.getElementById("myRange");
         slider.oninput =  ()=>{
-            const vid_len = this.player.getDuration();
             const slider_tc=Number(slider.value)*(this.end_tc-this.start_tc)/Number(slider.max)+this.start_tc
             this.player.seekTo(slider_tc,true);
-
-            //this.player.seekTo(vid_len / Number(slider.max) * Number(slider.value), true);
         }
     }
 

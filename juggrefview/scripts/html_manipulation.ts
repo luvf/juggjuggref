@@ -1,8 +1,8 @@
 // @filename: html_manipulation.ts
 
-import {RecordPoint, refPosition, RefRecord} from "./record.js"
+import {RecordPoint, RefRecord} from "./record.js"
 
-import {RecordList,RecordInfo} from "./server_communication.js"
+import {RecordInfo} from "./server_communication.js"
 
 export class Html_manipulation{
     private _canvas:HTMLCanvasElement;
@@ -35,7 +35,7 @@ export class Html_manipulation{
 
     private add_click_listener(element_id:string, fun:()=>void):void{//as_type:HTMLElement=HTMLInputElement
         const element = (document.getElementById(element_id));
-        if (element){
+        if (element){console.log("this.start_tc");
             element.addEventListener("click", fun);
         }
     }

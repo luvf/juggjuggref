@@ -4,13 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <!--<script type="text/javascript" language="javascript" src="{% static "juggjuggref.ts" %}"></script>-->
-
     <script id="juggjuggref_script" type="module"
             src = "{% static "juggjuggref.js" %}"
             data-videoid = "{{ videoId }}"
             data-start_tc = "{{ review.start }}"
             data-end_tc = "{{ review.end }}"></script>
-    <script type="module" language="javascript" src="{% static "YT_manipulation.js" %}"></script>
 
 
     <link rel="stylesheet" href="{% static "juggjuggref.css" %}">

@@ -3,7 +3,6 @@
 import {RefRecord} from "./record.js";
 import {Html_manipulation} from "./html_manipulation.js"
 
-
 export class YT_manipulation{
     view : Html_manipulation;
     player:YT.Player;
@@ -13,7 +12,8 @@ export class YT_manipulation{
 
 
     constructor(view:Html_manipulation) {
-        this.view = view
+        this.view = view;
+
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -50,7 +50,6 @@ export class YT_manipulation{
         this.on_player_state_change(event);
         if (this.getPlayerState() == 1) {
             const current_time = this.getCurrentTime();
-            console.log(current_time, this.view.get_review_start_tc(), this.view.get_review_end_tc())
 
             if (current_time<this.view.get_review_start_tc()){
                 this.seekTo(this.view.get_review_start_tc(),false)
