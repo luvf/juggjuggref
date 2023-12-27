@@ -114,7 +114,7 @@ class Controler{
         }
     }
     reset_record():void{
-        const length:number = this.player.getDuration();
+        const length:number = this.end_tc-this.start_tc;
         const nb_record:number = length*this._fps;
         this.record.reset_record(nb_record);
 
@@ -173,7 +173,7 @@ class Controler{
          *
          * @type {number}
          */
-        const video_time  :number = this.player.getCurrentTime();
+        const video_time  :number = this.player.getCurrentTime()-this.start_tc;
 
         const video_frame : number = Math.floor(video_time*this._fps);
         const nb_frames = 5 * this._fps;
