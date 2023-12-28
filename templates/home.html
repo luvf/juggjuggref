@@ -27,7 +27,7 @@
         </thead>
         <tbody>
             {% for point_review in reviews %}
-            <tr class='clickable-row' onclick="document.location='{% url "juggrefview:ref_tool" videoId=point_review.videoId start=point_review.start_time %}'" >
+            <tr class='clickable-row' onclick="document.location='{% url "juggrefview:review" videoId=point_review.videoId start=point_review.start_time %}'" >
                 <td class="image_cell"> <img class="miniature" src="http://img.youtube.com/vi/{{point_review.videoId}}/mqdefault.jpg"></td>
 
                 <td class="table_name">{{ point_review.name }}</td>

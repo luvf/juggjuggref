@@ -20,9 +20,10 @@ export async function submit_server(video_id:string, start_tc:number, record:Ref
      * submit a record to the server
      * url : [...]submit_record/<YT code>/
      */
-    const url : string = "/submit_record/" +
-        video_id+"/"+
-        start_tc.toString()+"/";
+    const url : string = "/video/" +
+        video_id+"/review/"+
+        start_tc.toString()+"/records/"+
+        record.name;
     const response = await fetch(url, {
         method : "POST",
         headers: {
@@ -42,9 +43,9 @@ export async function record_names(video_id:string, start_tc:number, callback:(v
      * @type {HTMLElement}
      */
 
-    const url:string = "/record_names/" +
-        video_id + "/"+
-        start_tc.toString()+"/";
+    const url:string = "/video/" +
+        video_id + "/review/"+
+        start_tc.toString()+"/records";
 
     const response = await fetch(url, {
         method: "GET",
@@ -59,7 +60,6 @@ export async function record_names(video_id:string, start_tc:number, callback:(v
 
 
 
-
 export async function load_record(record_id:RecordInfo, start:number,
                            callback:(json_file:RefRecord)=>void){
     /**
@@ -70,11 +70,10 @@ export async function load_record(record_id:RecordInfo, start:number,
      */
 
     const url:string =
-        "/load_record/" +
-        record_id.video_id+"/"+
-        String(start)+"/"+
-        record_id.ref_pos+"/"+
-        record_id.name+"/";
+        "/video/" +
+        record_id.video_id+"/review/"+
+        start.toString()+"/records/"+
+        record_id.name;
 
     const response = await fetch(url, {
         method : "GET",
